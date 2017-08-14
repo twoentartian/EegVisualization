@@ -37,6 +37,8 @@
 			this.buttonOpenClose = new System.Windows.Forms.Button();
 			this.comboBoxSerialPort = new System.Windows.Forms.ComboBox();
 			this.textBoxConsole = new System.Windows.Forms.TextBox();
+			this.visualizerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.openRealTimeVisualizerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -48,7 +50,8 @@
 			// 
 			this.menuStrip.ImageScalingSize = new System.Drawing.Size(28, 28);
 			this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.applicationToolStripMenuItem});
+            this.applicationToolStripMenuItem,
+            this.visualizerToolStripMenuItem});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
 			this.menuStrip.Size = new System.Drawing.Size(912, 38);
@@ -112,6 +115,21 @@
 			this.textBoxConsole.Size = new System.Drawing.Size(888, 380);
 			this.textBoxConsole.TabIndex = 5;
 			// 
+			// visualizerToolStripMenuItem
+			// 
+			this.visualizerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openRealTimeVisualizerToolStripMenuItem});
+			this.visualizerToolStripMenuItem.Name = "visualizerToolStripMenuItem";
+			this.visualizerToolStripMenuItem.Size = new System.Drawing.Size(113, 34);
+			this.visualizerToolStripMenuItem.Text = "Visualizer";
+			// 
+			// openRealTimeVisualizerToolStripMenuItem
+			// 
+			this.openRealTimeVisualizerToolStripMenuItem.Name = "openRealTimeVisualizerToolStripMenuItem";
+			this.openRealTimeVisualizerToolStripMenuItem.Size = new System.Drawing.Size(345, 34);
+			this.openRealTimeVisualizerToolStripMenuItem.Text = "Open Real Time Visualizer";
+			this.openRealTimeVisualizerToolStripMenuItem.Click += new System.EventHandler(this.openRealTimeVisualizerToolStripMenuItem_Click);
+			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 21F);
@@ -146,6 +164,8 @@
 		private System.Windows.Forms.Button buttonOpenClose;
 		private System.Windows.Forms.ComboBox comboBoxSerialPort;
 		private System.Windows.Forms.TextBox textBoxConsole;
+		private System.Windows.Forms.ToolStripMenuItem visualizerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem openRealTimeVisualizerToolStripMenuItem;
 	}
 }
 

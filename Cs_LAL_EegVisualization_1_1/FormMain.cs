@@ -31,7 +31,7 @@ namespace Cs_LAL_EegVisualization_1_1
 			else
 			{
 				DateTime currentDateTime = DateTime.Now;
-				textBoxConsole.AppendText($"{currentDateTime.Hour:D2}:{currentDateTime.Minute:D2}:{currentDateTime.Second:D2}: Error - ");
+				textBoxConsole.AppendText($"{currentDateTime.Hour:D2}:{currentDateTime.Minute:D2}:{currentDateTime.Second:D2}: Error\t");
 				textBoxConsole.AppendText(error + Environment.NewLine);
 			}
 		}
@@ -45,7 +45,7 @@ namespace Cs_LAL_EegVisualization_1_1
 			else
 			{
 				DateTime currentDateTime = DateTime.Now;
-				textBoxConsole.AppendText($"{currentDateTime.Hour:D2}:{currentDateTime.Minute:D2}:{currentDateTime.Second:D2}: Info - ");
+				textBoxConsole.AppendText($"{currentDateTime.Hour:D2}:{currentDateTime.Minute:D2}:{currentDateTime.Second:D2}: Info\t");
 				textBoxConsole.AppendText(info + Environment.NewLine);
 			}
 		}
@@ -60,6 +60,15 @@ namespace Cs_LAL_EegVisualization_1_1
 			Environment.Exit(0);
 		}
 
+		private void openRealTimeVisualizerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (!SerialIsOpen)
+			{
+				WriteToConsoleError("Please A Open Serial Port First");
+				return;
+			}
+		}
+
 		private void buttonRefresh_Click(object sender, EventArgs e)
 		{
 			SerialRefresh();
@@ -67,33 +76,97 @@ namespace Cs_LAL_EegVisualization_1_1
 
 		private void buttonOpenClose_Click(object sender, EventArgs e)
 		{
-
+			if (SerialIsOpen)
+			{
+				SerialClose();
+			}
+			else
+			{
+				if (comboBoxSerialPort.SelectedIndex == -1)
+				{
+					WriteToConsoleError("No COM Port Selected");
+				}
+				if (string.IsNullOrEmpty(SerialAvailablePorts[comboBoxSerialPort.SelectedIndex]))
+				{
+					WriteToConsoleError("Invaild COM Port");
+				}
+				try
+				{
+					SerialOpen(SerialAvailablePorts[comboBoxSerialPort.SelectedIndex]);
+				}
+				catch (UnauthorizedAccessException)
+				{
+					WriteToConsoleError("This Port Is Occupied");
+					return;
+				}
+				
+			}
 		}
 
 		#endregion
 
 		#region Serial
 
+		private bool SerialIsOpen
+		{
+			get { return serialPort.IsOpen; }
+			set
+			{
+				if (value)
+				{
+					buttonOpenClose.Text = "Close";
+					WriteToConsoleInfo("Port Now Is Open");
+				}
+				else
+				{
+					buttonOpenClose.Text = "Open";
+					WriteToConsoleInfo("Port Now Is Close");
+				}
+			}
+		}
+
+		private string[] SerialAvailablePorts;
+		private void SerialOpen(string portName)
+		{
+			serialPort.PortName = portName;
+			try
+			{
+				serialPort.Open();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				throw;
+			}
+			SerialIsOpen = true;
+		}
+
+		private void SerialClose()
+		{
+			serialPort.Close();
+			SerialIsOpen = false;
+		}
+
 		private void SerialRefresh()
 		{
 			comboBoxSerialPort.Items.Clear();
-			string[] availablePorts = SerialPort.GetPortNames();
-			foreach (var port in availablePorts)
+			SerialAvailablePorts = SerialPort.GetPortNames();
+			foreach (var port in SerialAvailablePorts)
 			{
 				comboBoxSerialPort.Items.Add(port);
 			}
-			if (availablePorts.Length == 0)
+			if (SerialAvailablePorts.Length == 0)
 			{
 				WriteToConsoleError("No Port Found");
 			}
-			else if (availablePorts.Length == 1)
+			else if (SerialAvailablePorts.Length == 1)
 			{
 				WriteToConsoleInfo($"Find 1 Port");
 				comboBoxSerialPort.SelectedIndex = 0;
 			}
 			else
 			{
-				WriteToConsoleInfo($"Find {availablePorts.Length:D} Ports");
+				WriteToConsoleInfo($"Find {SerialAvailablePorts.Length:D} Ports");
 			}
 		}
 
@@ -106,6 +179,7 @@ namespace Cs_LAL_EegVisualization_1_1
 			WriteToConsoleInfo("Program Start");
 			SerialRefresh();
 		}
+
 
 		#endregion
 
