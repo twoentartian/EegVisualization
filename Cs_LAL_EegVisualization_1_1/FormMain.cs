@@ -67,6 +67,8 @@ namespace Cs_LAL_EegVisualization_1_1
 				WriteToConsoleError("Please A Open Serial Port First");
 				return;
 			}
+			FormEegVisualizer eggVisualizerForm = new FormEegVisualizer();
+			eggVisualizerForm.Show();
 		}
 
 		private void buttonRefresh_Click(object sender, EventArgs e)
@@ -178,11 +180,17 @@ namespace Cs_LAL_EegVisualization_1_1
 		{
 			WriteToConsoleInfo("Program Start");
 			SerialRefresh();
+			DataManager dm = DataManager.GetInstance();
+			dm.SetDataLength(100);
 		}
 
+		private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			Environment.Exit(0);
+		}
 
 		#endregion
 
-		
+
 	}
 }

@@ -146,6 +146,7 @@
 			this.MaximizeBox = false;
 			this.Name = "FormMain";
 			this.Text = "EEG Visualizer";
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMain_FormClosed);
 			this.Load += new System.EventHandler(this.FormMain_Load);
 			this.menuStrip.ResumeLayout(false);
 			this.menuStrip.PerformLayout();
