@@ -35,34 +35,37 @@ namespace Cs_LAL_EegVisualization_1_1
 
 		#endregion
 
-		private EegData[] _rawData;
-		public EegData[] RawData => _rawData;
+		private EegData[,] _rawData;
+		public EegData[,] RawData => _rawData;
 
 		private readonly Stopwatch _stopwatch = new Stopwatch();
 		private bool _isFirstData = true;
 
-		public void SetDataLength(int length)
+		public void SetDataLengthAndChannel(int length, int channel)
 		{
-			_rawData = new EegData[length];
+			_rawData = new EegData[channel, length];
 			_isFirstData = true;
 		}
 
-		public double[] GetDataSequence()
+		public double[] GetDataSequence(int channel)
 		{
-			double[] data = new double[_rawData.Length];
+			double[] data = new double[_rawData.GetLength(1)];
 			for (int i = 0; i < data.Length; i++)
 			{
-				data[i] = _rawData[i].Value;
+				data[i] = _rawData[channel, i].Value;
 			}
 			return data;
 		}
 
 		public void ClearData()
 		{
-			for (int i = 0; i < _rawData.Length; i++)
+			for (int i = 0; i < _rawData.GetLength(0); i++)
 			{
-				_rawData[i].Time = 0;
-				_rawData[i].Value = 0;
+				for (int j = 0; j < _rawData.GetLength(1); j++)
+				{
+					_rawData[i, j].Time = 0;
+					_rawData[i, j].Value = 0;
+				}
 			}
 		}
 
@@ -72,7 +75,7 @@ namespace Cs_LAL_EegVisualization_1_1
 			_isFirstData = true;
 		}
 
-		public void AddData(double value)
+		public void AddData(int channel, double value)
 		{
 			long time = 0;
 			if (_isFirstData)
@@ -86,12 +89,12 @@ namespace Cs_LAL_EegVisualization_1_1
 				time = _stopwatch.ElapsedMilliseconds;
 			}
 
-			for (int i = 0; i < _rawData.Length - 1; i++)
+			for (int i = 0; i < _rawData.GetLength(1) - 1; i++)
 			{
-				_rawData[i] = _rawData[i + 1];
+				_rawData[channel, i] = _rawData[channel, i + 1];
 			}
-			_rawData[_rawData.Length - 1].Value = value;
-			_rawData[_rawData.Length - 1].Time = time;
+			_rawData[channel, _rawData.GetLength(1) - 1].Value = value;
+			_rawData[channel, _rawData.GetLength(1) - 1].Time = time;
 			Logger.GetInstance().WriteToLog(time, value);
 		}
 	}

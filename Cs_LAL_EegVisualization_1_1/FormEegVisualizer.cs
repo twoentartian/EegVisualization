@@ -45,6 +45,12 @@ namespace Cs_LAL_EegVisualization_1_1
 			chartFrequencyDomain.Series.Clear();
 			chartFrequencyDomain.Series.Add(FrequencyDomainTag);
 			chartFrequencyDomain.Series[FrequencyDomainTag].ChartType = SeriesChartType.FastLine;
+
+			for (int channel = 0; channel < ConfigManager.GetInstance().GetCurrentConfig().Channel; channel++)
+			{
+				comboBoxChannelSelect.Items.Add($"Channel: {channel:D}");
+			}
+			comboBoxChannelSelect.SelectedIndex = 0;
 		}
 
 		public void RefreshTimeChart(double[] data)
@@ -73,9 +79,11 @@ namespace Cs_LAL_EegVisualization_1_1
 
 		private void timerRefreshData_Tick(object sender, EventArgs e)
 		{
+			int channel = comboBoxChannelSelect.SelectedIndex;
+
 			DataManager dm = DataManager.GetInstance();
-			RefreshTimeChart(dm.GetDataSequence());
-			Complex[] fftComplexData = FftPart.FFT(dm.GetDataSequence(), false);
+			RefreshTimeChart(dm.GetDataSequence(channel));
+			Complex[] fftComplexData = FftPart.FFT(dm.GetDataSequence(channel), false);
 			double[] fftDoubleData = new double[fftComplexData.Length/2];
 			for (int i = 0; i < fftComplexData.Length/2; i++)
 			{
@@ -83,9 +91,10 @@ namespace Cs_LAL_EegVisualization_1_1
 			}
 			RefreshFrequencyChart(fftDoubleData);
 
-
-			dm.AddData(Math.Sin(i));
+			////////////////////////////////////////////////////////////
+			dm.AddData(0, Math.Sin(i));
 			i += 2.5;
+			////////////////////////////////////////////////////////////
 		}
 
 		#endregion
@@ -100,5 +109,13 @@ namespace Cs_LAL_EegVisualization_1_1
 
 		#endregion
 
+		#region Combobox
+
+		private void comboBoxChannelSelect_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		#endregion
 	}
 }

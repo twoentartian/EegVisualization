@@ -202,8 +202,9 @@ namespace Cs_LAL_EegVisualization_1_1
 		{
 			WriteToConsoleInfo("Program Start");
 			SerialRefresh();
-			DataManager dm = DataManager.GetInstance();
-			dm.SetDataLength(128);
+			ConfigManager.GetInstance().LoadConfig();
+			ConfigData cd = ConfigManager.GetInstance().GetCurrentConfig();
+			DataManager.GetInstance().SetDataLengthAndChannel(cd.DataCycleLength, cd.Channel);
 		}
 
 		private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
