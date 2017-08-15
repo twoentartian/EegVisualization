@@ -87,6 +87,7 @@
 			this.Controls.Add(this.chartTimeDomain);
 			this.Name = "FormEegVisualizer";
 			this.Text = "FormEegVisualizer";
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormEegVisualizer_FormClosed);
 			((System.ComponentModel.ISupportInitialize)(this.chartTimeDomain)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.chartFrequencyDomain)).EndInit();
 			this.ResumeLayout(false);

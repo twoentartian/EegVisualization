@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO.Ports;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,10 +14,21 @@ namespace Cs_LAL_EegVisualization_1_1
 {
 	public partial class FormMain : Form
 	{
-		public FormMain()
+		#region Singleton
+
+		private FormMain()
 		{
 			InitializeComponent();
 		}
+
+		private static FormMain _instance;
+
+		public static FormMain GetInstance()
+		{
+			return _instance ?? (_instance = new FormMain());
+		}
+
+		#endregion
 
 		#region Delegate
 
@@ -67,8 +79,16 @@ namespace Cs_LAL_EegVisualization_1_1
 				WriteToConsoleError("Please A Open Serial Port First");
 				return;
 			}
-			FormEegVisualizer eggVisualizerForm = new FormEegVisualizer();
-			eggVisualizerForm.Show();
+			try
+			{
+				FormEegVisualizer eggVisualizerForm = new FormEegVisualizer();
+				eggVisualizerForm.Show();
+				WriteToConsoleInfo("Visualizer Is Running");
+			}
+			catch (ApplicationException exception)
+			{
+				WriteToConsoleError(exception.Message);
+			}
 		}
 
 		private void buttonRefresh_Click(object sender, EventArgs e)
@@ -181,7 +201,7 @@ namespace Cs_LAL_EegVisualization_1_1
 			WriteToConsoleInfo("Program Start");
 			SerialRefresh();
 			DataManager dm = DataManager.GetInstance();
-			dm.SetDataLength(100);
+			dm.SetDataLength(128);
 		}
 
 		private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
