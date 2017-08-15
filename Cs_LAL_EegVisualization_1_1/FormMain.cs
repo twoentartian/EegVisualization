@@ -137,11 +137,13 @@ namespace Cs_LAL_EegVisualization_1_1
 				if (value)
 				{
 					buttonOpenClose.Text = "Close";
+					Logger.GetInstance().EnableLogger();
 					WriteToConsoleInfo("Port Now Is Open");
 				}
 				else
 				{
 					buttonOpenClose.Text = "Open";
+					Logger.GetInstance().DisableLogger();
 					WriteToConsoleInfo("Port Now Is Close");
 				}
 			}
@@ -210,7 +212,5 @@ namespace Cs_LAL_EegVisualization_1_1
 		}
 
 		#endregion
-
-
 	}
 }

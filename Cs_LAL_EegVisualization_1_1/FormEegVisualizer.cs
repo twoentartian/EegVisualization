@@ -74,14 +74,16 @@ namespace Cs_LAL_EegVisualization_1_1
 		private void timerRefreshData_Tick(object sender, EventArgs e)
 		{
 			DataManager dm = DataManager.GetInstance();
-			RefreshTimeChart(dm.RawData);
-			Complex[] fftComplexData = FftPart.FFT(dm.RawData, false);
+			RefreshTimeChart(dm.GetDataSequence());
+			Complex[] fftComplexData = FftPart.FFT(dm.GetDataSequence(), false);
 			double[] fftDoubleData = new double[fftComplexData.Length/2];
 			for (int i = 0; i < fftComplexData.Length/2; i++)
 			{
 				fftDoubleData[i] = fftComplexData[i].Magnitude;
 			}
 			RefreshFrequencyChart(fftDoubleData);
+
+
 			dm.AddData(Math.Sin(i));
 			i += 2.5;
 		}

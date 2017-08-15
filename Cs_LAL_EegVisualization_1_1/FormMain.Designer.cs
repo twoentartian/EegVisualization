@@ -33,12 +33,12 @@
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
 			this.applicationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.visualizerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.openRealTimeVisualizerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.buttonRefresh = new System.Windows.Forms.Button();
 			this.buttonOpenClose = new System.Windows.Forms.Button();
 			this.comboBoxSerialPort = new System.Windows.Forms.ComboBox();
 			this.textBoxConsole = new System.Windows.Forms.TextBox();
-			this.visualizerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.openRealTimeVisualizerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -69,9 +69,24 @@
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(239, 34);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(137, 34);
 			this.exitToolStripMenuItem.Text = "Exit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+			// 
+			// visualizerToolStripMenuItem
+			// 
+			this.visualizerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openRealTimeVisualizerToolStripMenuItem});
+			this.visualizerToolStripMenuItem.Name = "visualizerToolStripMenuItem";
+			this.visualizerToolStripMenuItem.Size = new System.Drawing.Size(113, 34);
+			this.visualizerToolStripMenuItem.Text = "Visualizer";
+			// 
+			// openRealTimeVisualizerToolStripMenuItem
+			// 
+			this.openRealTimeVisualizerToolStripMenuItem.Name = "openRealTimeVisualizerToolStripMenuItem";
+			this.openRealTimeVisualizerToolStripMenuItem.Size = new System.Drawing.Size(345, 34);
+			this.openRealTimeVisualizerToolStripMenuItem.Text = "Open Real Time Visualizer";
+			this.openRealTimeVisualizerToolStripMenuItem.Click += new System.EventHandler(this.openRealTimeVisualizerToolStripMenuItem_Click);
 			// 
 			// buttonRefresh
 			// 
@@ -114,21 +129,6 @@
 			this.textBoxConsole.ReadOnly = true;
 			this.textBoxConsole.Size = new System.Drawing.Size(888, 380);
 			this.textBoxConsole.TabIndex = 5;
-			// 
-			// visualizerToolStripMenuItem
-			// 
-			this.visualizerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openRealTimeVisualizerToolStripMenuItem});
-			this.visualizerToolStripMenuItem.Name = "visualizerToolStripMenuItem";
-			this.visualizerToolStripMenuItem.Size = new System.Drawing.Size(113, 34);
-			this.visualizerToolStripMenuItem.Text = "Visualizer";
-			// 
-			// openRealTimeVisualizerToolStripMenuItem
-			// 
-			this.openRealTimeVisualizerToolStripMenuItem.Name = "openRealTimeVisualizerToolStripMenuItem";
-			this.openRealTimeVisualizerToolStripMenuItem.Size = new System.Drawing.Size(345, 34);
-			this.openRealTimeVisualizerToolStripMenuItem.Text = "Open Real Time Visualizer";
-			this.openRealTimeVisualizerToolStripMenuItem.Click += new System.EventHandler(this.openRealTimeVisualizerToolStripMenuItem_Click);
 			// 
 			// FormMain
 			// 
