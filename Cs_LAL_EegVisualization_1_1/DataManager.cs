@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing.Printing;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Win32.SafeHandles;
 
 namespace Cs_LAL_EegVisualization_1_1
 {
@@ -75,8 +69,13 @@ namespace Cs_LAL_EegVisualization_1_1
 			_isFirstData = true;
 		}
 
-		public void AddData(int channel, double value)
+		public void AddData(double[] value)
 		{
+			if (value.Length != ConfigManager.GetInstance().GetCurrentConfig().Channel)
+			{
+				throw new ApplicationException("The Number Of Data Do Not Equal To Channel Length");
+			}
+
 			long time = 0;
 			if (_isFirstData)
 			{
@@ -88,13 +87,15 @@ namespace Cs_LAL_EegVisualization_1_1
 			{
 				time = _stopwatch.ElapsedMilliseconds;
 			}
-
-			for (int i = 0; i < _rawData.GetLength(1) - 1; i++)
+			for (int channel = 0; channel < _rawData.GetLength(0); channel++)
 			{
-				_rawData[channel, i] = _rawData[channel, i + 1];
+				for (int i = 0; i < _rawData.GetLength(1) - 1; i++)
+				{
+					_rawData[channel, i] = _rawData[channel, i + 1];
+				}
+				_rawData[channel, _rawData.GetLength(1) - 1].Value = value[channel];
+				_rawData[channel, _rawData.GetLength(1) - 1].Time = time;
 			}
-			_rawData[channel, _rawData.GetLength(1) - 1].Value = value;
-			_rawData[channel, _rawData.GetLength(1) - 1].Time = time;
 			Logger.GetInstance().WriteToLog(time, value);
 		}
 	}
@@ -125,18 +126,31 @@ namespace Cs_LAL_EegVisualization_1_1
 		public void EnableLogger()
 		{
 			DateTime dt = DateTime.Now;
-			string LogFolderPath = Environment.CurrentDirectory + Path.DirectorySeparatorChar + LogFolderName;
-			if (!Directory.Exists(LogFolderPath))
+			string logFolderPath = Environment.CurrentDirectory + Path.DirectorySeparatorChar + LogFolderName;
+			if (!Directory.Exists(logFolderPath))
 			{
-				Directory.CreateDirectory(LogFolderPath);
+				Directory.CreateDirectory(logFolderPath);
 			}
-			string LogPath = LogFolderPath + Path.DirectorySeparatorChar + $"{dt.Year:D4}-{dt.Month:D2}-{dt.Day:D2} {dt.Hour:D2}-{dt.Minute:D2}-{dt.Second:D2}" + LogExtName;
-			_fs = new FileStream(LogPath, FileMode.OpenOrCreate);
+			string logPath = logFolderPath + Path.DirectorySeparatorChar + $"{dt.Year:D4}-{dt.Month:D2}-{dt.Day:D2} {dt.Hour:D2}-{dt.Minute:D2}-{dt.Second:D2}" + LogExtName;
+			_fs = new FileStream(logPath, FileMode.OpenOrCreate);
+			string startContent = "Time (ms)" + LogSeperator;
+			for (int channel = 0; channel < ConfigManager.GetInstance().GetCurrentConfig().Channel; channel++)
+			{
+				startContent += $"Channel {channel:D}" + LogSeperator;
+			}
+			startContent += Environment.NewLine;
+			byte[] bufferB = Encoding.ASCII.GetBytes(startContent);
+			_fs.Write(bufferB, 0, bufferB.Length);
 		}
 
-		public void WriteToLog(long time, double value)
+		public void WriteToLog(long time, double[] value)
 		{
-			string bufferS = time + LogSeperator + value.ToString("F5") + Environment.NewLine;
+			string data = String.Empty;
+			foreach (var d in value)
+			{
+				data = data + d + LogSeperator;
+			}
+			string bufferS = time + LogSeperator + data + Environment.NewLine;
 			byte[] bufferD = Encoding.ASCII.GetBytes(bufferS);
 			_fs.Write(bufferD,0,bufferD.Length);
 		}

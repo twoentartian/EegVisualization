@@ -92,9 +92,13 @@ namespace Cs_LAL_EegVisualization_1_1
 			RefreshFrequencyChart(fftDoubleData);
 
 			////////////////////////////////////////////////////////////
-			dm.AddData(0, Math.Sin(i));
+			double[] temp = new double[8]
+			{
+				Math.Sin(i),Math.Sin(i),Math.Sin(i),Math.Sin(i),Math.Sin(i),Math.Sin(i),Math.Sin(i),Math.Sin(i)
+			};
+			dm.AddData(temp);
 			i += 2.5;
-			////////////////////////////////////////////////////////////
+			/////////////////,///////////////////////////////////////////
 		}
 
 		#endregion
