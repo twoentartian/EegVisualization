@@ -15,7 +15,10 @@ namespace Cs_LAL_EegVisualization_1_1
 	public partial class FormMain : Form
 	{
 		#region Singleton
-
+		/// <summary>
+		/// 设计模式-单例模式
+		/// 确保只有一个实例，并且该实例可以从任何地方访问
+		/// </summary>
 		private FormMain()
 		{
 			InitializeComponent();
@@ -31,7 +34,10 @@ namespace Cs_LAL_EegVisualization_1_1
 		#endregion
 
 		#region Delegate
-
+		/// <summary>
+		/// 写入string数据到控制台，为跨线程调用，使用委托。
+		/// </summary>
+		/// <param name="str"></param>
 		private delegate void WriteToConsoleHandler(string str);
 		public void WriteToConsoleError(string error)
 		{
@@ -64,14 +70,22 @@ namespace Cs_LAL_EegVisualization_1_1
 
 		#endregion
 
-
 		#region Button
-
+		/// <summary>
+		/// 当点击应用-退出按钮时发生
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Environment.Exit(0);
 		}
 
+		/// <summary>
+		/// 当点击打开实时图像按钮时发生
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void openRealTimeVisualizerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (!SerialIsOpen)
@@ -91,11 +105,21 @@ namespace Cs_LAL_EegVisualization_1_1
 			}
 		}
 
+		/// <summary>
+		/// 重新刷新串口
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void buttonRefresh_Click(object sender, EventArgs e)
 		{
 			SerialRefresh();
 		}
 
+		/// <summary>
+		/// 打开或者关闭串口
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void buttonOpenClose_Click(object sender, EventArgs e)
 		{
 			if (SerialIsOpen)
@@ -128,12 +152,17 @@ namespace Cs_LAL_EegVisualization_1_1
 		#endregion
 
 		#region Serial
-
+		/// <summary>
+		/// 串口数据包的分隔符，分割时间和电压值
+		/// </summary>
 		private string[] Seperator = new string[]
 		{
 			";"
 		};
 
+		/// <summary>
+		/// 属性：串口是否打开
+		/// </summary>
 		private bool SerialIsOpen
 		{
 			get { return serialPort.IsOpen; }
@@ -154,7 +183,15 @@ namespace Cs_LAL_EegVisualization_1_1
 			}
 		}
 
+		/// <summary>
+		/// 计算机中目前所有可用的串口
+		/// </summary>
 		private string[] SerialAvailablePorts;
+
+		/// <summary>
+		/// 打开串口
+		/// </summary>
+		/// <param name="portName"></param>
 		private void SerialOpen(string portName)
 		{
 			serialPort.PortName = portName;
@@ -170,12 +207,18 @@ namespace Cs_LAL_EegVisualization_1_1
 			SerialIsOpen = true;
 		}
 
+		/// <summary>
+		/// 关闭串口
+		/// </summary>
 		private void SerialClose()
 		{
 			serialPort.Close();
 			SerialIsOpen = false;
 		}
 
+		/// <summary>
+		/// 刷新目前所有的可用串口
+		/// </summary>
 		private void SerialRefresh()
 		{
 			comboBoxSerialPort.Items.Clear();
@@ -199,10 +242,15 @@ namespace Cs_LAL_EegVisualization_1_1
 			}
 		}
 
+		/// <summary>
+		/// 当串口接收到数据时，执行此函数。
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
 		{
-			string dataStr = serialPort.ReadLine();
-			string[] items = dataStr.Split(Seperator, StringSplitOptions.RemoveEmptyEntries);
+			string dataStr = serialPort.ReadLine();																					//读取一行数据
+			string[] items = dataStr.Split(Seperator, StringSplitOptions.RemoveEmptyEntries);				//按照分隔符分开数据
 			long time;
 			double value;
 			try
@@ -224,7 +272,11 @@ namespace Cs_LAL_EegVisualization_1_1
 		#endregion
 
 		#region Form
-
+		/// <summary>
+		/// 加载主窗口时，执行此函数。
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void FormMain_Load(object sender, EventArgs e)
 		{
 			WriteToConsoleInfo("Program Start");
@@ -234,6 +286,11 @@ namespace Cs_LAL_EegVisualization_1_1
 			DataManager.GetInstance().SetDataLengthAndChannel(cd.DataCycleLength, cd.Channel);
 		}
 
+		/// <summary>
+		/// 主窗口关闭时的执行函数。
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			Environment.Exit(0);

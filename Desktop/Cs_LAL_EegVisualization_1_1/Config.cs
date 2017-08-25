@@ -18,7 +18,10 @@ namespace Cs_LAL_EegVisualization_1_1
 	class ConfigManager
 	{
 		#region Singleton
-
+		/// <summary>
+		/// 设计模式-单例模式
+		/// 确保只有一个实例，并且该实例可以从任何地方访问
+		/// </summary>
 		private ConfigManager()
 		{
 			
@@ -33,15 +36,23 @@ namespace Cs_LAL_EegVisualization_1_1
 
 		#endregion
 
-		private const string ConfigName = "Config.json";
-		private readonly string ConfigPath = Environment.CurrentDirectory + Path.DirectorySeparatorChar + ConfigName;
+		private const string ConfigName = "Config.json";																												//配置文件的文件名
+		private readonly string ConfigPath = Environment.CurrentDirectory + Path.DirectorySeparatorChar + ConfigName;         //配置文件的路径
 		private ConfigData _currentConfig = new ConfigData();
 
+		/// <summary>
+		/// 获取当前配置
+		/// </summary>
+		/// <returns></returns>
 		public ConfigData GetCurrentConfig()
 		{
 			return _currentConfig;
 		}
-		
+
+		/// <summary>
+		/// 获取默认配置
+		/// </summary>
+		/// <returns></returns>
 		private ConfigData GetDefault()
 		{
 			ConfigData temp = new ConfigData();
@@ -50,6 +61,9 @@ namespace Cs_LAL_EegVisualization_1_1
 			return temp;
 		}
 
+		/// <summary>
+		/// 读取保存在JSON文件中的配置
+		/// </summary>
 		public void LoadConfig()
 		{
 			if (File.Exists(ConfigPath))
@@ -66,6 +80,10 @@ namespace Cs_LAL_EegVisualization_1_1
 			}
 		}
 
+		/// <summary>
+		/// 将配置写入文件中
+		/// </summary>
+		/// <param name="argConfigData"></param>
 		public void WriteConfig(ConfigData argConfigData)
 		{
 			string jsonContent = JsonConvert.SerializeObject(argConfigData);

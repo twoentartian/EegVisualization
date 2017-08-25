@@ -26,6 +26,12 @@ namespace Cs_LAL_EegVisualization_1_1
 			return output;
 		}
 
+		/// <summary>
+		/// 执行傅里叶变换，invert代表是否转置。
+		/// </summary>
+		/// <param name="input"></param>
+		/// <param name="invert"></param>
+		/// <returns></returns>
 		public static Complex[] FFT(double[] input, bool invert)
 		{
 			Complex[] output = new Complex[input.Length];
@@ -36,6 +42,12 @@ namespace Cs_LAL_EegVisualization_1_1
 			return output = FFT(output, invert);
 		}
 
+		/// <summary>
+		/// 执行傅里叶变换，invert代表是否转置。
+		/// </summary>
+		/// <param name="input"></param>
+		/// <param name="invert"></param>
+		/// <returns></returns>
 		private static Complex[] FFT(Complex[] input, bool invert)
 		{
 			if (input.Length == 1)
@@ -75,6 +87,13 @@ namespace Cs_LAL_EegVisualization_1_1
 			return output;
 		}
 
+		/// <summary>
+		/// 频域滤波器
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="Nc"></param>
+		/// <param name="Hd"></param>
+		/// <returns></returns>
 		private static double[] FreqFilter(double[] data, int Nc, Complex[] Hd)
 		{
 			int N = data.Length;

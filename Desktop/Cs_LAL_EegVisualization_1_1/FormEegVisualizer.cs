@@ -35,7 +35,9 @@ namespace Cs_LAL_EegVisualization_1_1
 		private string FrequencyDomainTag = "Frequency Domain";
 
 		#region Func
-
+		/// <summary>
+		/// 初始化图表内容
+		/// </summary>
 		private void InitCharts()
 		{
 			chartTimeDomain.Series.Clear();
@@ -53,6 +55,10 @@ namespace Cs_LAL_EegVisualization_1_1
 			comboBoxChannelSelect.SelectedIndex = 0;
 		}
 
+		/// <summary>
+		/// 刷新时域的图像
+		/// </summary>
+		/// <param name="data"></param>
 		public void RefreshTimeChart(double[] data)
 		{
 			chartTimeDomain.Series[TimeDomainTag].Points.Clear();
@@ -62,6 +68,11 @@ namespace Cs_LAL_EegVisualization_1_1
 			}
 		}
 
+		/// <summary>
+		/// 刷新频域的图像
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="sampleFre"></param>
 		public void RefreshFrequencyChart(double[] data, double sampleFre)
 		{
 			chartFrequencyDomain.Series[FrequencyDomainTag].Points.Clear();
@@ -79,6 +90,7 @@ namespace Cs_LAL_EegVisualization_1_1
 
 		private static double i = 0;
 
+		//Timer会每隔一定时间执行一次这个函数，执行的间隔可以在设计器中找到。
 		private void timerRefreshData_Tick(object sender, EventArgs e)
 		{
 			int channel = comboBoxChannelSelect.SelectedIndex;
@@ -103,7 +115,11 @@ namespace Cs_LAL_EegVisualization_1_1
 		#endregion
 
 		#region Form
-
+		/// <summary>
+		/// 当这个窗口关闭时发生的事件。
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void FormEegVisualizer_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			FormMain.GetInstance().WriteToConsoleInfo("Visualizer Is Closed");
@@ -113,7 +129,11 @@ namespace Cs_LAL_EegVisualization_1_1
 		#endregion
 
 		#region Combobox
-
+		/// <summary>
+		/// 当channel选择框的选择内容改变时发生的事件。
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void comboBoxChannelSelect_SelectedIndexChanged(object sender, EventArgs e)
 		{
 
