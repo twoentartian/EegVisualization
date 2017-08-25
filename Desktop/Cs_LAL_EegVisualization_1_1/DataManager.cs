@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Numerics;
 using System.Text;
 
 namespace Cs_LAL_EegVisualization_1_1
@@ -32,13 +33,29 @@ namespace Cs_LAL_EegVisualization_1_1
 		private EegData[,] _rawData;
 		public EegData[,] RawData => _rawData;
 
-		private readonly Stopwatch _stopwatch = new Stopwatch();
-		private bool _isFirstData = true;
+		private bool _isFftDataFresh = false;
+		public bool IsFftDataFresh => _isFftDataFresh;
+
+		private double[,] _fftData;
+		public double[,] FftData
+		{
+			get
+			{
+				_isFftDataFresh = false;
+				return _fftData;
+			}
+		}
+
+		private double _sampleFrequency;
+		public double SampleFrequency => _sampleFrequency;
+
+		private int count = 0;
+
 
 		public void SetDataLengthAndChannel(int length, int channel)
 		{
 			_rawData = new EegData[channel, length];
-			_isFirstData = true;
+			_fftData = new double[channel,length/2];
 		}
 
 		public double[] GetDataSequence(int channel)
@@ -48,6 +65,17 @@ namespace Cs_LAL_EegVisualization_1_1
 			{
 				data[i] = _rawData[channel, i].Value;
 			}
+			return data;
+		}
+
+		public double[] GetFrequencySequence(int channel)
+		{
+			double[] data = new double[_fftData.GetLength(1)];
+			for (int i = 0; i < data.Length; i++)
+			{
+				data[i] = _fftData[channel, i];
+			}
+			_isFftDataFresh = false;
 			return data;
 		}
 
@@ -63,29 +91,12 @@ namespace Cs_LAL_EegVisualization_1_1
 			}
 		}
 
-		public void ResetTimer()
-		{
-			_stopwatch.Stop();
-			_isFirstData = true;
-		}
-
-		public void AddData(double[] value)
+		
+		public void AddData(long time, double[] value)
 		{
 			if (value.Length != ConfigManager.GetInstance().GetCurrentConfig().Channel)
 			{
 				throw new ApplicationException("The Number Of Data Do Not Equal To Channel Length");
-			}
-
-			long time = 0;
-			if (_isFirstData)
-			{
-				_isFirstData = false;
-				_stopwatch.Reset();
-				_stopwatch.Start();
-			}
-			else
-			{
-				time = _stopwatch.ElapsedMilliseconds;
 			}
 			for (int channel = 0; channel < _rawData.GetLength(0); channel++)
 			{
@@ -97,6 +108,23 @@ namespace Cs_LAL_EegVisualization_1_1
 				_rawData[channel, _rawData.GetLength(1) - 1].Time = time;
 			}
 			Logger.GetInstance().WriteToLog(time, value);
+			count++;
+			if (count == ConfigManager.GetInstance().GetCurrentConfig().DataCycleLength)
+			{
+				count = 0;
+				double sampleTime = (double)(_rawData[0, _rawData.GetLength(1) - 1].Time - _rawData[0, 0].Time) /
+				                         (ConfigManager.GetInstance().GetCurrentConfig().DataCycleLength-1);
+				_sampleFrequency = 1000000 / sampleTime;
+				for (int channel = 0; channel < FftData.GetLength(0); channel++)
+				{
+					Complex[] fftComplexData = FftPart.FFT(GetDataSequence(channel), false);
+					for (int i = 0; i < fftComplexData.Length / 2; i++)
+					{
+						_fftData[channel, i] = fftComplexData[i].Magnitude;
+					}
+				}
+				_isFftDataFresh = true;
+			}
 		}
 	}
 
@@ -133,7 +161,7 @@ namespace Cs_LAL_EegVisualization_1_1
 			}
 			string logPath = logFolderPath + Path.DirectorySeparatorChar + $"{dt.Year:D4}-{dt.Month:D2}-{dt.Day:D2} {dt.Hour:D2}-{dt.Minute:D2}-{dt.Second:D2}" + LogExtName;
 			_fs = new FileStream(logPath, FileMode.OpenOrCreate);
-			string startContent = "Time (ms)" + LogSeperator;
+			string startContent = "Time (us)" + LogSeperator;
 			for (int channel = 0; channel < ConfigManager.GetInstance().GetCurrentConfig().Channel; channel++)
 			{
 				startContent += $"Channel {channel:D}" + LogSeperator;
@@ -145,6 +173,10 @@ namespace Cs_LAL_EegVisualization_1_1
 
 		public void WriteToLog(long time, double[] value)
 		{
+			if (_fs == null)
+			{
+				return;
+			}
 			string data = String.Empty;
 			foreach (var d in value)
 			{
@@ -157,7 +189,6 @@ namespace Cs_LAL_EegVisualization_1_1
 
 		public void DisableLogger()
 		{
-			DataManager.GetInstance().ResetTimer();
 			_fs.Flush();
 			_fs.Close();
 			_fs.Dispose();

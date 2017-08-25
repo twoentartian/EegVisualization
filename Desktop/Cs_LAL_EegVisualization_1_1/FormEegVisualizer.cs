@@ -62,13 +62,15 @@ namespace Cs_LAL_EegVisualization_1_1
 			}
 		}
 
-		public void RefreshFrequencyChart(double[] data)
+		public void RefreshFrequencyChart(double[] data, double sampleFre)
 		{
 			chartFrequencyDomain.Series[FrequencyDomainTag].Points.Clear();
 			for (int i = 0; i < data.Length; i++)
 			{
 				chartFrequencyDomain.Series[FrequencyDomainTag].Points.AddXY(i + 1, data[i]);
 			}
+			chartFrequencyDomain.ChartAreas[0].AxisX.Minimum = 0;
+			chartFrequencyDomain.ChartAreas[0].AxisX.Maximum = (int)(sampleFre/2);
 		}
 
 		#endregion
@@ -83,22 +85,19 @@ namespace Cs_LAL_EegVisualization_1_1
 
 			DataManager dm = DataManager.GetInstance();
 			RefreshTimeChart(dm.GetDataSequence(channel));
-			Complex[] fftComplexData = FftPart.FFT(dm.GetDataSequence(channel), false);
-			double[] fftDoubleData = new double[fftComplexData.Length/2];
-			for (int i = 0; i < fftComplexData.Length/2; i++)
-			{
-				fftDoubleData[i] = fftComplexData[i].Magnitude;
-			}
-			RefreshFrequencyChart(fftDoubleData);
 
-			////////////////////////////////////////////////////////////
-			double[] temp = new double[8]
+			if (dm.IsFftDataFresh)
 			{
-				Math.Sin(i),Math.Sin(i),Math.Sin(i),Math.Sin(i),Math.Sin(i),Math.Sin(i),Math.Sin(i),Math.Sin(i)
-			};
-			dm.AddData(temp);
-			i += 2.5;
-			/////////////////,///////////////////////////////////////////
+				RefreshFrequencyChart(dm.GetFrequencySequence(channel), dm.SampleFrequency);
+			}
+
+			//Complex[] fftComplexData = FftPart.FFT(dm.GetDataSequence(channel), false);
+			//double[] fftDoubleData = new double[fftComplexData.Length/2];
+			//for (int i = 0; i < fftComplexData.Length/2; i++)
+			//{
+			//	fftDoubleData[i] = fftComplexData[i].Magnitude;
+			//}
+			//RefreshFrequencyChart(fftDoubleData);
 		}
 
 		#endregion

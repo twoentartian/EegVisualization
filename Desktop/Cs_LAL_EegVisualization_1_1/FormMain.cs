@@ -129,6 +129,11 @@ namespace Cs_LAL_EegVisualization_1_1
 
 		#region Serial
 
+		private string[] Seperator = new string[]
+		{
+			";"
+		};
+
 		private bool SerialIsOpen
 		{
 			get { return serialPort.IsOpen; }
@@ -192,6 +197,28 @@ namespace Cs_LAL_EegVisualization_1_1
 			{
 				WriteToConsoleInfo($"Find {SerialAvailablePorts.Length:D} Ports");
 			}
+		}
+
+		private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+		{
+			string dataStr = serialPort.ReadLine();
+			string[] items = dataStr.Split(Seperator, StringSplitOptions.RemoveEmptyEntries);
+			long time;
+			double value;
+			try
+			{
+				time = Convert.ToInt64(items[0]);
+				value = Convert.ToDouble(items[1]);
+			}
+			catch (Exception)
+			{
+				return;
+			}
+			double[] values = new double[]
+			{
+				value
+			};
+			DataManager.GetInstance().AddData(time, values);
 		}
 
 		#endregion

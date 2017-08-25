@@ -44,7 +44,9 @@
 			// 
 			// serialPort
 			// 
-			this.serialPort.BaudRate = 115200;
+			this.serialPort.BaudRate = 250000;
+			this.serialPort.ReadBufferSize = 40960;
+			this.serialPort.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialPort_DataReceived);
 			// 
 			// menuStrip
 			// 

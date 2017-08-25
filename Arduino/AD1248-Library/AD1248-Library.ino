@@ -31,6 +31,8 @@ void setup()
 	ADS.begin(CS, START, DRDY);  //initialize ADS as object of the ads12xx class
 
 	ADS.Reset();
+  ADS.SetRegisterValue(STATUS, 0x05);         //Enable Auto-Calibration
+  
 	
 	delay(10);
 
